@@ -3,7 +3,7 @@ INSERT INTO department (
 ) VALUES (
   "HR"
 ),
-( 
+(
   "IT"
 ),
 (

@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 // import questions
 const { questions } = require("./questions");
 
+require("dotenve").config();
 const init = async () => {
   // set variable to run the loop
   let inProgress = true;

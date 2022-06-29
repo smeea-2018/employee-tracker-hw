@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/smeea-2018/employee-tracker-hw/issues"
   },
-  "homepage": "https://github.com/smeea-2018/employee-tracker-hw#readme"
+  "homepage": "https://github.com/smeea-2018/employee-tracker-hw#readme",
+  "dependencies": {
+    "inquirer": "^9.0.0"
+  }
 }

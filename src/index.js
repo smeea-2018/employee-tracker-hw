@@ -1,8 +1,19 @@
 const inquirer = require("inquirer");
-// import questions
+// // // import questions
 const { questions } = require("./questions");
 
-require("dotenve").config();
+// require("dotenve").config();
+
+// const config = {
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_DATABASE,
+// };
+
+// const db = mysql.createconnection(config);
+// require("dotenv").config();
+
 const init = async () => {
   // set variable to run the loop
   let inProgress = true;

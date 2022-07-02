@@ -1,6 +1,11 @@
 const inquirer = require("inquirer");
 //  import questions
-const { questions } = require("./questions");
+const {
+  questions,
+  departmentQuestions,
+  roleQuestions,
+  employeeQuestions,
+} = require("./questions");
 
 // get the client
 const mysql = require("mysql2");
@@ -45,28 +50,43 @@ const init = async () => {
     //console.log(answers);
     if (answers.proceed === "View all departments") {
       //const departments = getDepartment();
-      const departments = await db.query("SELECT * FROM `department`");
+      const departments = db.query("SELECT * FROM `department`");
       console.log(departments);
-    }
-    if (answers.proceed === "view all roles") {
-      const roles = await db.query("SELECT * FROM `role`");
+    } else if (answers.proceed === "view all roles") {
+      const roles = db.query(
+        "SELECT  role.id, role.title, role.salary,department.departmentname FROM `role` INNER JOIN `department` ON role.department_id=department.id"
+      );
       console.log(roles);
-    }
-    if (answers.proceed === "view all employees") {
-      const employees = await db.query("SELECT * FROM `employee`");
+    } else if (answers.proceed === "view all employees") {
+      const employees = db.query(
+        "SELECT  employee.id, employee.first_name, employee.last_name,role.title, role.salary, department.departmentname FROM `employee INNER JOIN `role` ON employee.role_id=role.id LEFT JOIN `department` ON role.department_id = department.id"
+      );
       //     return results;
       console.log(employees);
-    }
-    if (answers.proceed === "add a department") {
-      console.log("department addes");
-    }
-    if (answers.proceed === "add a role") {
+    } else if (answers.proceed === "add a department") {
+      const departmentAnswers = await inquirer.prompt(departmentQuestions);
+      console.log(departmentAnswers);
+      addDepartmentQuery = `INSERT INTO department ( departmentname ) VALUES ('${departmentAnswers.departmentName}')`;
+
+      db.query(addDepartmentQuery);
+
+      //const departmentsAdded = db.query("SELECT * FROM `department`");
+      //console.log(departmentsAdded);
+      console.log("department added");
+    } else if (answers.proceed === "add a role") {
+      const roleAnswers = await inquirer.prompt(roleQuestions);
+      db.query(
+        `INSERT INTO role (  title, salary, department_id) VALUES (  '${roleAnswers.roleName}',  '${roleAnswers.roleSalary}', '${roleAnswers.departmentName}')`
+      );
+
       console.log("New role added");
-    }
-    if (answers.proceed === "add an employee") {
+    } else if (answers.proceed === "add an employee") {
+      const employeeAnswers = await inquirer.prompt(employeeQuestions);
+      db.query(
+        `INSERT INTO employee (   first_name,  last_name,  role_id,  manager_id) VALUES (  '${employeeAnswers.employeeFirstName}',  '${employeeAnswers.employeeLastNAme}', '${employeeAnswers.employeeRoleId},'${employeeAnswers.employeeManager}')`
+      );
       console.log("Employee added");
-    }
-    if (answers.proceed === "Update an employee role") {
+    } else if (answers.proceed === "Update an employee role") {
       console.log("Employee role added");
     } else {
       inProgress = false;

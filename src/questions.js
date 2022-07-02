@@ -55,38 +55,27 @@ const employeeQuestions = [
   },
   {
     type: "input",
-    name: "employeeRole",
+    name: "employeeRoleId",
     message: "Please enter role of the employee",
   },
   {
     type: "input",
-    name: "employeeManager",
+    name: "",
     message: "Please enter manager name",
   },
 ];
-// const questions1 = [
-//   {
-//     type: "input",
-//     name: "viewDepartment",
-//     message: "view all departments",
-//   },
 
-//   {
-//     type: "input",
-//     name: "viewRoles",
-//     message: "view all roles",
-//   },
+const UpdateEmployeeQuestions = [
+  {
+    type: "input",
+    name: "employeeName",
+    message: "Please enter first name of the employee",
+  },
+];
 
-//   {
-//     type: "input",
-//     name: "viewEmployees",
-//     message: "view all employees",
-//   },
-//   //   {
-//   //     type: "input",
-//   //     name: "viewEmployees",
-//   //     message: "view all employees",
-//   //   },
-// ];
-
-module.exports = { questions, departmentQuestions };
+module.exports = {
+  questions,
+  departmentQuestions,
+  roleQuestions,
+  employeeQuestions,
+};

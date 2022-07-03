@@ -64,7 +64,7 @@ The following videos show the web application's appearance and functionality:
 
 <a href = "">Watch Video </a>
 
-![Employee-Tracker functionality demonstration]()
+![Employee-Tracker functionality demonstration](./employee-tracker.gif)
 
 ## Contact Me:
 

@@ -11,6 +11,7 @@ const questions = [
       "add a role",
       "add an employee",
       "update an employee role",
+      "delete a department",
       "Quit",
     ],
   },
@@ -37,8 +38,8 @@ const roleQuestions = [
   },
   {
     type: "input",
-    name: "departmentName",
-    message: "Please enter department",
+    name: "departmentID",
+    message: "Please enter department ID",
   },
 ];
 
@@ -60,7 +61,7 @@ const employeeQuestions = [
   },
   {
     type: "input",
-    name: "",
+    name: "manager",
     message: "Please enter manager name",
   },
 ];
@@ -73,9 +74,17 @@ const UpdateEmployeeQuestions = [
   },
 ];
 
+const deleteQuestions = [
+  {
+    type: "input",
+    name: "deleteDepartmentId",
+    message: "Please enter id of the department you want to delete",
+  },
+];
 module.exports = {
   questions,
   departmentQuestions,
   roleQuestions,
   employeeQuestions,
+  deleteQuestions,
 };

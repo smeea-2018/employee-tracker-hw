@@ -108,8 +108,9 @@ const init = async () => {
           employees,
           employeeRoles
         );
+        console.log(employeeAnswers);
         const addEmployee = await executeQuery(
-          `INSERT INTO employee (   first_name,  last_name,role_id, manager_id) VALUES (  '${employeeAnswers.employeeFirstName}',  '${employeeAnswers.employeeLastName}', '${employeeAnswers.employeeRoleId}', '${employeeAnswers.manager};')`
+          `INSERT INTO employee (   first_name,  last_name,role_id, manager_id) VALUES (  '${employeeAnswers.employeeFirstName}',  '${employeeAnswers.employeeLastName}', '${employeeAnswers.employeeRoleId}', '${employeeAnswers.manager}')`
         );
         console.log("Employee added");
       } else if (answers.proceed === "update an employee role") {

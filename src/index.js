@@ -1,13 +1,16 @@
 const inquirer = require("inquirer");
+// const PORT = 3306;
+require("dotenv").config();
 
 const cTable = require("console.table");
 //  import questions
 const {
   questions,
   departmentQuestions,
-  roleQuestions,
   employeeQuestions,
   deleteQuestions,
+  askRoleQuestions,
+  getEmployeeDetails,
 } = require("./questions");
 
 const updateEmployees = require("./updateEmployee");
@@ -15,8 +18,6 @@ const updateEmployees = require("./updateEmployee");
 // get the client
 const mysql = require("mysql2");
 const initDatabase = require("./db");
-
-require("dotenv").config();
 
 // const config = {
 //   host: process.env.DB_HOST,
@@ -72,7 +73,7 @@ const init = async () => {
         console.table(roles);
       } else if (answers.proceed === "view all employees") {
         const employees = await executeQuery(
-          "SELECT  employee.id, employee.first_name, employee.last_name,role.title, role.salary, department.departmentname FROM employee INNER JOIN `role` ON employee.role_id=role.id LEFT JOIN `department` ON role.department_id = department.id"
+          "SELECT  employee.id, employee.first_name, employee.last_name,role.title, role.salary, department.departmentname FROM employee INNER JOIN `role` ON employee.role_id=role.id LEFT JOIN `department` ON role.department_id = department.id LEFT JOIN `employee` ON role.department_id = department.id"
         );
         //     return results;
         console.table(employees);
@@ -89,16 +90,26 @@ const init = async () => {
         //console.log(departmentsAdded);
         console.log("department added");
       } else if (answers.proceed === "add a role") {
-        const roleAnswers = await inquirer.prompt(roleQuestions);
+        const departments = await executeQuery("SELECT * FROM department");
+        const roleAnswers = await askRoleQuestions(departments);
+        // const roleAnswers = await inquirer.prompt(roleQuestions);
+        // const roleAdded = await executeQuery(
+        //   `INSERT INTO role (  title, salary, department_id) VALUES (  '${roleAnswers.roleName}',  '${roleAnswers.roleSalary}', '${roleAnswers.departmentName}')`
+        // );
         const roleAdded = await executeQuery(
-          `INSERT INTO role (  title, salary, department_id) VALUES (  '${roleAnswers.roleName}',  '${roleAnswers.roleSalary}', '${roleAnswers.departmentName}')`
+          `INSERT INTO role (title, salary, department_id) VALUES ("${roleAnswers.roleName}", "${roleAnswers.roleSalary}", ${roleAnswers.roleDepartment});`
         );
 
         console.log("New role added");
       } else if (answers.proceed === "add an employee") {
-        const employeeAnswers = await inquirer.prompt(employeeQuestions);
+        const employees = await executeQuery("SELECT * FROM employee");
+        const employeeRoles = await executeQuery("SELECT * FROM role");
+        const employeeAnswers = await getEmployeeDetails(
+          employees,
+          employeeRoles
+        );
         const addEmployee = await executeQuery(
-          `INSERT INTO employee (   first_name,  last_name,  role_id,  manager_id) VALUES (  '${employeeAnswers.employeeFirstName}',  '${employeeAnswers.employeeLastNAme}', '${employeeAnswers.employeeRoleId},'${employeeAnswers.employeeManager}')`
+          `INSERT INTO employee (   first_name,  last_name,role_id, manager_id) VALUES (  '${employeeAnswers.employeeFirstName}',  '${employeeAnswers.employeeLastName}', '${employeeAnswers.employeeRoleId}', '${employeeAnswers.manager};')`
         );
         console.log("Employee added");
       } else if (answers.proceed === "update an employee role") {

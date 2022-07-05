@@ -94,4 +94,4 @@ WHERE id = 3;
 
 UPDATE employee
 SET manager_id = 4
-WHERE id = 4;
+WHERE id = 2;

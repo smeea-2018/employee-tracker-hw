@@ -17,37 +17,7 @@ const {
 const mysql = require("mysql2");
 const initDatabase = require("./db");
 
-// const config = {
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-// };
-
-// const queryFactory = async () => {
-//   //create db connection
-//   const db = await mysql.createConnection(config);
-//   const getDepartment = async () => {
-//     const [results] = await db.query("SELECT * FROM `department`");
-//     return results;
-//   };
-
-//   const getRole = async () => {
-//     const [results] = await db.query("SELECT * FROM `role`");
-//     return results;
-//   };
-//   const getEmployee = async () => {
-//     const [results] = await db.query("SELECT * FROM `employee`");
-//     return results;
-//   };
-//   return { getDepartment, getRole, getEmployee };
-// };
-
 const init = async () => {
-  // const db = await mysql.createConnection(config);
-  //const { getDepartment, getRole, getEmployee } = queryFactory();
-  // set variable to run the loop
-
   try {
     const { executeQuery, closeConnection } = await initDatabase({
       host: process.env.DB_HOST,
@@ -60,7 +30,7 @@ const init = async () => {
     while (inProgress) {
       // get answers for first set of questions
       const answers = await inquirer.prompt(questions);
-      //console.log(answers);
+
       if (answers.proceed === "View all departments") {
         const departments = await executeQuery("SELECT * FROM department");
         console.table(departments);
@@ -71,21 +41,18 @@ const init = async () => {
         console.table(roles);
       } else if (answers.proceed === "view all employees") {
         const employees = await executeQuery(
-          "SELECT  employee.id, employee.first_name, employee.last_name,role.title, role.salary, department.departmentname FROM employee INNER JOIN `role` ON employee.role_id=role.id LEFT JOIN `department` ON role.department_id = department.id LEFT JOIN `employee` ON role.department_id = department.id"
+          "SELECT  e.id, e.first_name, e.last_name, CONCAT(m.first_name,' ',  m.last_name) AS manager, role.title, role.salary, department.departmentname    FROM employee AS e INNER JOIN `role` ON e.role_id=role.id LEFT JOIN `department` ON role.department_id = department.id LEFT JOIN `employee` AS m ON e.manager_id = m.id"
         );
         //     return results;
         console.table(employees);
       } else if (answers.proceed === "add a department") {
         const departmentAnswers = await inquirer.prompt(departmentQuestions);
         console.log(departmentAnswers);
-        // addDepartmentQuery = `INSERT INTO department ( departmentname ) VALUES ('${departmentAnswers.departmentName}')`;
 
-        // db.query(addDepartmentQuery);
         const addDepartmentQuery = await executeQuery(
           `INSERT INTO department ( departmentname ) VALUES ('${departmentAnswers.departmentName}')`
         );
-        //const departmentsAdded = db.query("SELECT * FROM `department`");
-        //console.log(departmentsAdded);
+
         console.log("department added");
       } else if (answers.proceed === "add a role") {
         const departments = await executeQuery("SELECT * FROM department");
@@ -98,7 +65,7 @@ const init = async () => {
           `INSERT INTO role (title, salary, department_id) VALUES ("${roleAnswers.roleName}", "${roleAnswers.roleSalary}", ${roleAnswers.roleDepartment});`
         );
 
-        console.log("New role added");
+        console.log("Role added");
       } else if (answers.proceed === "add an employee") {
         const employees = await executeQuery("SELECT * FROM employee");
         const employeeRoles = await executeQuery("SELECT * FROM role");
@@ -106,7 +73,7 @@ const init = async () => {
           employees,
           employeeRoles
         );
-        console.log(employeeAnswers);
+
         const addEmployee = await executeQuery(
           `INSERT INTO employee (   first_name,  last_name,role_id, manager_id) VALUES (  '${employeeAnswers.employeeFirstName}',  '${employeeAnswers.employeeLastName}', '${employeeAnswers.employeeRoleId}', '${employeeAnswers.manager}')`
         );
@@ -126,7 +93,7 @@ const init = async () => {
         const updatedEmployeeRole = await executeQuery(
           `UPDATE employee SET role_id = '${updatedEmployee.role}' WHERE id = ${updatedEmployee.employee};`
         );
-        console.log("Employee role added");
+        console.log("Sucdessfully updated");
       } else if (answers.proceed === "delete a department") {
         const deleteDepartmentAnswers = await inquirer.prompt(deleteQuestions);
         const deleteDepartment = await executeQuery(
@@ -134,6 +101,7 @@ const init = async () => {
         );
       } else {
         inProgress = false;
+        console.log("Bye");
       }
     }
   } catch (error) {

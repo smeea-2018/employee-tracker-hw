@@ -1,4 +1,16 @@
 const inquirer = require("inquirer");
+const roleList = (employeeRoles) => {
+  return employeeRoles.map((employeeRole) => ({
+    name: employeeRole.title,
+    value: employeeRole.id,
+  }));
+};
+const updateEmployeeChoice = (employeeName) => {
+  return employeeName.map((ename) => ({
+    name: ename.employee,
+    value: ename.id,
+  }));
+};
 const questions = [
   {
     type: "list",
@@ -70,12 +82,6 @@ const managerList = (managers) => {
   }));
 };
 
-const roleList = (employeeRoles) => {
-  return employeeRoles.map((employeeRole) => ({
-    name: employeeRole.title,
-    value: employeeRole.id,
-  }));
-};
 const getEmployeeDetails = async (employees, employeeRoles) => {
   const employeeQuestions = [
     {
@@ -107,13 +113,24 @@ const getEmployeeDetails = async (employees, employeeRoles) => {
   return employeeAnswers;
 };
 
-const UpdateEmployeeQuestions = [
-  {
-    type: "input",
-    name: "employeeName",
-    message: "Please enter first name of the employee",
-  },
-];
+const updateEmployees = async (employeeName, rolesToAdd) => {
+  const updateEmployeeQuestions = [
+    {
+      name: "employee",
+      type: "list",
+      message: "Please select employee",
+      choices: updateEmployeeChoice(employeeName),
+    },
+    {
+      name: "role",
+      type: "list",
+      message: "Please select role",
+      choices: roleList(rolesToAdd),
+    },
+  ];
+  const updateEmployeeAnswers = await inquirer.prompt(updateEmployeeQuestions);
+  return updateEmployeeAnswers;
+};
 
 const deleteQuestions = [
   {
@@ -128,4 +145,5 @@ module.exports = {
   deleteQuestions,
   askRoleQuestions,
   getEmployeeDetails,
+  updateEmployees,
 };

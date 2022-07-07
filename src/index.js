@@ -87,18 +87,22 @@ const init = async () => {
         const rolesToAdd = await executeQuery(
           `SELECT role.id, role.title ,role.salary,department.departmentname AS department FROM role INNER JOIN department ON department.id=role.department_id ORDER BY department;`
         );
-        // console.log(rolesToAdd);
-        // console.log(employeeName);
+
         const updatedEmployee = await updateEmployees(employeeName, rolesToAdd);
         const updatedEmployeeRole = await executeQuery(
           `UPDATE employee SET role_id = '${updatedEmployee.role}' WHERE id = ${updatedEmployee.employee};`
         );
-        console.log("Sucdessfully updated");
+        console.log("Successfully updated");
       } else if (answers.proceed === "delete a department") {
         const deleteDepartmentAnswers = await inquirer.prompt(deleteQuestions);
         const deleteDepartment = await executeQuery(
           `DELETE FROM department where id = '${deleteDepartmentAnswers.deleteDepartmentId}'`
         );
+        // else if (answers.proceed === "delete a role") {
+        // const deleteDepartmentAnswers = await inquirer.prompt(deleteQuestions);
+        // const deleteDepartment = await executeQuery(
+        //   `DELETE FROM department where id = '${deleteDepartmentAnswers.deleteDepartmentId}'`
+        // );
       } else {
         inProgress = false;
         console.log("Bye");
